@@ -29,6 +29,8 @@ class LinearLayer:
         """
         self.device = device
 
+        self.w = torch.randn(output_dim, input_dim, device=self.device) * math.sqrt(2.0 / input_dim)
+        self.b = torch.randn(1, output_dim, device=self.device) * math.sqrt(2.0 / input_dim)
     def forward(self, X):
         """
         Compute the forward pass of the linear layer.
@@ -44,7 +46,10 @@ class LinearLayer:
         """
 
         # Store the input and calculate the output of the linear layer
-        pass
+        self.X = X
+        Z = X @ self.W
+
+        return Z += self.b
 
 
     def backward(self, dY):
@@ -64,12 +69,20 @@ class LinearLayer:
         """
 
         # dY_flat shape: (batch_size * sequence_length, output_dim)
+        dY_flat = dY.reshape(-1, dY.shape[-1])
 
         # X_flat shape: (batch_size * sequence_length, input_dim)
+        dX_flat = self.X.reshape(-1, self.X.shape[-1])
 
         # dW shape: (output_dim, input_dim)
+        slef.dW = dY_flat.T @ X_flat
+        self.db = dY.sum(dim=(0,1))
 
-        pass
+        dX = dY @ self.w
+
+        return dX
+
+        
 
 
 
@@ -85,3 +98,5 @@ class LinearLayer:
         """
 
         # Update the weights and biases of the layer using the learning rate
+        self.W -= lr * self.dW
+        self.b -= lr * self.db
