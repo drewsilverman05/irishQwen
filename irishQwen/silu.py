@@ -9,11 +9,19 @@ class SiLU:
 
     def forward(self, X):
         # x * sigmoid(x)
-        pass
+        self.X
+        self.sig = torch.sigmoid(X)
+
+        return X * self.sig
 
     def backward(self, dA):
         # d/dx [x * s(x)] = s(x) + x * s(x) * (1 - s(x))
-        pass
+        x = self.X 
+        
+        dsilu_dx = self.sig * (1 + x * (1 - self.sig))
+
+        return dA * dsilu_dx
+
 
     def update(self, lr):
         # Activation layer has no trainable parameters.
